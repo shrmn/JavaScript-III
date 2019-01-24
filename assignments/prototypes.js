@@ -1,9 +1,12 @@
 /*
-  Object oriented design is commonly used in video games.  For this part of the assignment you will be implementing several constructor functions with their correct inheritance hierarchy.
+  Object oriented design is commonly used in video games.  
+  For this part of the assignment you will be implementing several constructor 
+  functions with their correct inheritance hierarchy.
 
   In this file you will be creating three constructor functions: GameObject, CharacterStats, Humanoid.  
 
-  At the bottom of this file are 3 objects that all end up inheriting from Humanoid.  Use the objects at the bottom of the page to test your constructor functions.
+  At the bottom of this file are 3 objects that all end up inheriting from Humanoid.  
+  Use the objects at the bottom of the page to test your constructor functions.
   
   Each constructor function has unique properties and methods that are defined in their block comments below:
 */
@@ -15,6 +18,15 @@
   * destroy() // prototype method -> returns the string: 'Object was removed from the game.'
 */
 
+function GameObject(GameObjectAttrs) {
+  this.createdAt = Date();
+  this.dimensions = GameObjectAttrs.dimensions;  
+}
+
+GameObject.prototype.destroy = function() {
+  return `${this.name} was removed from the game.`; 
+}
+
 /*
   === CharacterStats ===
   * healthPoints
@@ -22,6 +34,18 @@
   * takeDamage() // prototype method -> returns the string '<object name> took damage.'
   * should inherit destroy() from GameObject's prototype
 */
+
+function CharacterStats(statsAttrs) {
+  GameObject.call(this, statsAttrs);
+  this.healthPoints = statsAttrs.healthPoints;
+  this.name = statsAttrs.name;
+}
+
+CharacterStats.prototype = Object.create(GameObject.prototype);
+
+CharacterStats.prototype.takeDamage = function() {
+  return `${this.name} took damage.`;
+}
 
 /*
   === Humanoid (Having an appearance or character resembling that of a human.) ===
@@ -32,7 +56,20 @@
   * should inherit destroy() from GameObject through CharacterStats
   * should inherit takeDamage() from CharacterStats
 */
- 
+
+function Humanoid(humanoidAttrs) {
+  CharacterStats.call(this, humanoidAttrs);
+  this.team = humanoidAttrs.team;
+  this.weapons = humanoidAttrs.weapons;
+  this.language = humanoidAttrs.language;  
+}
+
+Humanoid.prototype = Object.create(CharacterStats.prototype);
+
+Humanoid.prototype.greet = function() {
+  return `${this.name} offers a greeting in ${this.language}.`;
+}
+
 /*
   * Inheritance chain: GameObject -> CharacterStats -> Humanoid
   * Instances of Humanoid should have all of the same properties as CharacterStats and GameObject.
@@ -41,7 +78,7 @@
 
 // Test you work by un-commenting these 3 objects and the list of console logs below:
 
-/*
+
   const mage = new Humanoid({
     createdAt: new Date(),
     dimensions: {
@@ -102,9 +139,100 @@
   console.log(archer.greet()); // Lilith offers a greeting in Elvish.
   console.log(mage.takeDamage()); // Bruce took damage.
   console.log(swordsman.destroy()); // Sir Mustachio was removed from the game.
-*/
+
 
   // Stretch task: 
   // * Create Villain and Hero constructor functions that inherit from the Humanoid constructor function.  
-  // * Give the Hero and Villains different methods that could be used to remove health points from objects which could result in destruction if health gets to 0 or drops below 0;
+  // * Give the Hero and Villains different methods that could be used to remove health points from objects 
+  // which could result in destruction if health gets to 0 or drops below 0;
   // * Create two new objects, one a villain and one a hero and fight it out with methods!
+
+// Hero constructor
+
+function Hero(heroAttrs) {
+  Humanoid.call(this, heroAttrs);  
+}
+
+Hero.prototype = Object.create(Humanoid.prototype);
+
+Hero.prototype.heroicDeed = function(target) {    
+  if ( target.healthPoints > 0) {
+    target.healthPoints += -1;    
+  } else {
+    return `This person is already dead!`;
+  };
+  if (target.healthPoints > 0) {
+    return `${this.name} has wounded ${target.name} for 1hp! ${target.name} has ${target.healthPoints} remaining!`;
+  } else if (target.healthPoints === 0) {
+    return `${this.name} has slain ${target.name}!`;
+  };
+}
+
+// Villain constructor
+
+function Villain(villainAttrs) {
+  Humanoid.call(this, villainAttrs);    
+}
+
+Villain.prototype = Object.create(Humanoid.prototype);
+
+Villain.prototype.villainousAct = function(target) {  
+  if ( target.healthPoints > 0) {
+    target.healthPoints += -1;    
+  } else {
+    return `This person is already dead!`;
+  };
+  if (target.healthPoints > 0) {
+    return `${this.name} has wounded ${target.name} for 1hp! ${target.name} has ${target.healthPoints} remaining!`;
+  } else if (target.healthPoints === 0) {
+    return `${this.name} has slain ${target.name}!`;
+  };
+}
+
+// Hero and Villain examples
+
+
+const protagonist = new Hero({
+  createdAt: new Date(),
+  dimensions: {
+    length: 2,
+    width: 2,
+    height: 2,
+  },
+  healthPoints: 5,
+  name: 'Sir Tain',
+  team: 'The Round Table',
+  weapons: [
+    'Giant Sword',
+    'Shield',
+  ],
+  language: 'Common Tongue',
+});
+
+const antagonist = new Villain({
+  createdAt: new Date(),
+  dimensions: {
+    length: 2,
+    width: 2,
+    height: 2,
+  },
+  healthPoints: 4,
+  name: 'Sir Lee',
+  team: 'The Round Table',
+  weapons: [
+    'Giant Sword',
+    'Shield',
+  ],
+  language: 'Common Tongue',
+});
+
+console.log(antagonist.greet());
+console.log(protagonist.greet());
+console.log(antagonist.villainousAct(protagonist));
+console.log(protagonist.heroicDeed(antagonist));
+console.log(antagonist.villainousAct(protagonist));
+console.log(protagonist.heroicDeed(antagonist));
+console.log(antagonist.villainousAct(protagonist));
+console.log(protagonist.heroicDeed(antagonist));
+console.log(antagonist.villainousAct(protagonist));
+console.log(protagonist.heroicDeed(antagonist));
