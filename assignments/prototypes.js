@@ -24,7 +24,7 @@ function GameObject(GameObjectAttrs) {
 }
 
 GameObject.prototype.destroy = function() {
-  return `Object was removed from the game.`; 
+  return `${this.name} was removed from the game.`; 
 }
 
 /*
@@ -69,7 +69,7 @@ Humanoid.prototype = Object.create(CharacterStats.prototype);
 Humanoid.prototype.greet = function() {
   return `${this.name} offers a greeting in ${this.language}.`;
 }
- 
+
 /*
   * Inheritance chain: GameObject -> CharacterStats -> Humanoid
   * Instances of Humanoid should have all of the same properties as CharacterStats and GameObject.
@@ -143,5 +143,96 @@ Humanoid.prototype.greet = function() {
 
   // Stretch task: 
   // * Create Villain and Hero constructor functions that inherit from the Humanoid constructor function.  
-  // * Give the Hero and Villains different methods that could be used to remove health points from objects which could result in destruction if health gets to 0 or drops below 0;
+  // * Give the Hero and Villains different methods that could be used to remove health points from objects 
+  // which could result in destruction if health gets to 0 or drops below 0;
   // * Create two new objects, one a villain and one a hero and fight it out with methods!
+
+// Hero constructor
+
+function Hero(heroAttrs) {
+  Humanoid.call(this, heroAttrs);  
+}
+
+Hero.prototype = Object.create(Humanoid.prototype);
+
+Hero.prototype.heroicDeed = function(target) {    
+  if ( target.healthPoints > 0) {
+    target.healthPoints += -1;    
+  } else {
+    return `This person is already dead!`;
+  };
+  if (target.healthPoints > 0) {
+    return `${this.name} has wounded the ${target.name} for 1hp! ${target.name} has ${target.healthPoints} remaining!`;
+  } else if (target.healthPoints === 0) {
+    return `${this.name} has slain ${target.name}!`;
+  };
+}
+
+// Villain constructor
+
+function Villain(villainAttrs) {
+  Humanoid.call(this, villainAttrs);    
+}
+
+Villain.prototype = Object.create(Humanoid.prototype);
+
+Villain.prototype.villainousAct = function(target) {  
+  if ( target.healthPoints > 0) {
+    target.healthPoints += -1;    
+  } else {
+    return `This person is already dead!`;
+  };
+  if (target.healthPoints > 0) {
+    return `${this.name} has wounded the ${target.name} for 1hp! ${target.name} has ${target.healthPoints} remaining!`;
+  } else if (target.healthPoints === 0) {
+    return `${this.name} has slain ${target.name}!`;
+  };
+}
+
+// Hero and Villain examples
+
+
+const protagonist = new Hero({
+  createdAt: new Date(),
+  dimensions: {
+    length: 2,
+    width: 2,
+    height: 2,
+  },
+  healthPoints: 5,
+  name: 'Sir Tain',
+  team: 'The Round Table',
+  weapons: [
+    'Giant Sword',
+    'Shield',
+  ],
+  language: 'Common Tongue',
+});
+
+const antagonist = new Villain({
+  createdAt: new Date(),
+  dimensions: {
+    length: 2,
+    width: 2,
+    height: 2,
+  },
+  healthPoints: 4,
+  name: 'Sir Lee',
+  team: 'The Round Table',
+  weapons: [
+    'Giant Sword',
+    'Shield',
+  ],
+  language: 'Common Tongue',
+});
+
+console.log(antagonist.greet());
+console.log(protagonist.greet());
+console.log(antagonist.villainousAct(protagonist));
+console.log(protagonist.heroicDeed(antagonist));
+console.log(antagonist.villainousAct(protagonist));
+console.log(protagonist.heroicDeed(antagonist));
+console.log(antagonist.villainousAct(protagonist));
+console.log(protagonist.heroicDeed(antagonist));
+console.log(antagonist.villainousAct(protagonist));
+console.log(protagonist.heroicDeed(antagonist));
