@@ -162,7 +162,7 @@ Hero.prototype.heroicDeed = function(target) {
     return `This person is already dead!`;
   };
   if (target.healthPoints > 0) {
-    return `${this.name} has wounded the ${target.name} for 1hp! ${target.name} has ${target.healthPoints} remaining!`;
+    return `${this.name} has wounded ${target.name} for 1hp! ${target.name} has ${target.healthPoints} remaining!`;
   } else if (target.healthPoints === 0) {
     return `${this.name} has slain ${target.name}!`;
   };
@@ -183,7 +183,7 @@ Villain.prototype.villainousAct = function(target) {
     return `This person is already dead!`;
   };
   if (target.healthPoints > 0) {
-    return `${this.name} has wounded the ${target.name} for 1hp! ${target.name} has ${target.healthPoints} remaining!`;
+    return `${this.name} has wounded ${target.name} for 1hp! ${target.name} has ${target.healthPoints} remaining!`;
   } else if (target.healthPoints === 0) {
     return `${this.name} has slain ${target.name}!`;
   };
